@@ -383,6 +383,10 @@ class Pytest(Harness):
             '--log-cli-format=%(levelname)s: %(message)s'
         ])
 
+        # Use the test timeout as the base timeout for pytest
+        base_timeout = handler.get_test_timeout()
+        command.append(f'--base-timeout={base_timeout}')
+
         if handler.type_str == 'device':
             command.extend(
                 self._generate_parameters_for_hardware(handler)
@@ -664,6 +668,7 @@ class Gtest(Harness):
 
 
 class Test(Harness):
+    __test__ = False  # for pytest to skip this class when collects tests
     RUN_PASSED = "PROJECT EXECUTION SUCCESSFUL"
     RUN_FAILED = "PROJECT EXECUTION FAILED"
     test_suite_start_pattern = r"Running TESTSUITE (?P<suite_name>.*)"
